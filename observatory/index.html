@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1018">
+  <meta name="description" content="深空观测台，探索模拟观测趋势、测站分布和观测日志。">
+  <title>深空观测台 · NIGHTWATCH</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#overview">跳至主内容</a>
+  <div class="shell">
+    <aside class="rail" aria-label="主导航">
+      <a class="brand" href="#overview"><i class="brand-symbol" aria-hidden="true"><b></b></i><span>NIGHTWATCH<small>深空观测台</small></span></a>
+      <nav class="nav">
+        <a class="nav-link" href="#overview" aria-current="location"><i class="icon icon-grid" aria-hidden="true"></i>观测总览</a>
+        <a class="nav-link" href="#channels"><i class="icon icon-channel" aria-hidden="true"></i>测站网络</a>
+        <a class="nav-link" href="#exceptions"><i class="icon icon-stack" aria-hidden="true"></i>观测日志<span class="nav-count" id="nav-count"></span></a>
+      </nav>
+      <div class="rail-bottom"><span class="avatar" aria-hidden="true">◈</span><div><strong>观测档案</strong><small>时间基准 UTC</small></div></div>
+    </aside>
+
+    <main id="overview" tabindex="-1">
+      <header class="topbar"><div class="breadcrumb"><span class="breadcrumb-root">观测中心</span><span class="breadcrumb-divider" aria-hidden="true">/</span><strong id="section-label">观测总览</strong></div><div class="top-meta"><span class="demo"><i></i>模拟观测数据</span><time datetime="2026-11-23">2026.11.23 UTC</time></div></header>
+      <div class="content">
+        <section class="hero" aria-labelledby="page-title">
+          <img class="hero-image" src="./saturn.jpg" width="1536" height="626" alt="卡西尼探测器拍摄的土星与行星环" fetchpriority="high">
+          <div class="hero-text"><p class="hero-label">卡西尼影像档案 <span></span> 土星</p><h1 id="page-title">深空观测台<span>.</span></h1><p class="hero-copy">追踪观测信号，检索测站与待核验事件。</p><a class="button primary" href="#exceptions">查看观测日志</a></div>
+          <a class="photo-credit" href="https://science.nasa.gov/photojournal/a-farewell-to-saturn/" aria-label="土星影像来源 NASA、JPL-Caltech 和 Space Science Institute">NASA / JPL-Caltech / SSI</a>
+        </section>
+
+        <section class="metrics" aria-label="观测指标">
+          <article class="metric"><p>今日观测帧数</p><div class="metric-value">8,426</div><small><em>+12.8%</em> 较昨日</small><canvas class="spark" data-trend="volume" aria-hidden="true"></canvas></article>
+          <article class="metric"><p>有效帧率</p><div class="metric-value">97.6<span>%</span></div><small><em>+1.4 个百分点</em> 较昨日</small><canvas class="spark" data-trend="quality" aria-hidden="true"></canvas></article>
+          <article class="metric metric-warn"><p>待核验事件</p><div class="metric-value" id="pending-value">6</div><small id="urgent-value">3 条高优先级</small></article>
+          <article class="metric"><p>中位采集时延</p><div class="metric-value">21<span> 秒</span></div><small><em>−8 秒</em> 较昨日</small><canvas class="spark" data-trend="speed" aria-hidden="true"></canvas></article>
+        </section>
+
+        <div class="insights">
+          <section class="panel trend" aria-labelledby="trend-title">
+            <div class="panel-head"><div><h2 id="trend-title">观测趋势</h2><p>采集帧数与有效帧数</p></div><div class="segment" aria-label="趋势区间"><button type="button" data-range="7" aria-pressed="true">近 7 天</button><button type="button" data-range="30" aria-pressed="false">近 30 天</button></div></div>
+            <div class="legend"><span><i></i>采集帧数</span><span><i class="legend-alt"></i>有效帧数</span></div>
+            <div class="trend-plot"><canvas id="trend-canvas" role="img" aria-label="采集帧数与有效帧数趋势"></canvas><div id="trend-tooltip" class="tooltip" hidden></div></div>
+          </section>
+
+          <section id="channels" class="panel channels" aria-labelledby="channel-title">
+            <div class="panel-head"><div><h2 id="channel-title">全球测站</h2><p>按今日采集帧数分布</p></div></div>
+            <div class="donut" role="img" aria-label="阿塔卡马 48%、莫纳克亚 31%、加纳利 21%"><div><strong>8,426</strong><span>观测帧</span></div></div>
+            <div class="channel-list" aria-label="按测站查看观测日志"><button type="button" data-channel="阿塔卡马站" aria-pressed="false"><i class="dot"></i><span>阿塔卡马站</span><strong>48%</strong></button><button type="button" data-channel="莫纳克亚站" aria-pressed="false"><i class="dot jd"></i><span>莫纳克亚站</span><strong>31%</strong></button><button type="button" data-channel="加纳利站" aria-pressed="false"><i class="dot tm"></i><span>加纳利站</span><strong>21%</strong></button></div>
+          </section>
+        </div>
+
+        <section id="exceptions" class="panel queue" aria-labelledby="queue-title">
+          <div class="panel-head queue-head"><div><h2 id="queue-title">观测日志 <span id="queue-count" class="queue-count" aria-live="polite"></span></h2><p>核对光谱、图像与设备事件。</p></div><div class="queue-actions"><label class="search"><i class="icon icon-search" aria-hidden="true"></i><input id="search" type="search" placeholder="搜索编号或观测目标" aria-label="搜索编号或观测目标"><kbd aria-hidden="true">/</kbd></label><button id="export" class="button" type="button"><i class="icon icon-download" aria-hidden="true"></i>导出 CSV</button></div></div>
+          <div class="queue-controls"><div class="tabs" aria-label="核验状态"><button type="button" data-filter="all" aria-pressed="true">全部</button><button type="button" data-filter="pending" aria-pressed="false">待核验</button><button type="button" data-filter="urgent" aria-pressed="false">高优先级</button><button type="button" data-filter="done" aria-pressed="false">已核验</button></div><label class="channel-select"><span class="visually-hidden">测站筛选</span><select id="channel-filter"><option value="">全部测站</option><option>阿塔卡马站</option><option>莫纳克亚站</option><option>加纳利站</option></select></label></div>
+          <table class="orders" aria-label="观测事件"><thead><tr><th scope="col">事件 / 目标</th><th scope="col">测站</th><th scope="col">事件类型</th><th scope="col">优先级</th><th scope="col">状态</th><th scope="col">记录时间 UTC</th><th scope="col"><span class="visually-hidden">操作</span></th></tr></thead><tbody id="order-rows"></tbody></table>
+          <p id="empty" class="empty" hidden>没有符合条件的观测事件。</p>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <dialog id="detail" class="drawer" aria-labelledby="detail-title">
+    <div class="drawer-content">
+      <div class="drawer-head"><div><p id="detail-code"></p><h2 id="detail-title"></h2></div><button type="button" id="close-detail" class="button icon-button" aria-label="关闭详情">×</button></div>
+      <dl class="detail-meta" id="detail-meta"></dl>
+      <section class="detail-section"><h3>观测记录</h3><p id="detail-reason"></p></section>
+      <button id="change-status" class="button primary" type="button"></button>
+    </div>
+  </dialog>
+  <p id="notice" class="toast" role="status" hidden></p>
+</body>
+</html>
