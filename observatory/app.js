@@ -171,7 +171,17 @@ const monthly = [3560, 4100, 3900, 5050, 4640, 5440, 4990, 6020, 5650, 6400, 609
 const number = new Intl.NumberFormat("zh-CN");
 const plot = $("#trend-canvas");
 const tooltip = $("#trend-tooltip");
-const color = { frames: "#d0fb72", valid: "#6baaff", grid: "#2a3748", muted: "#a3b1c4" };
+const theme = getComputedStyle(document.documentElement);
+const token = name => theme.getPropertyValue(name).trim();
+const color = {
+  frames: token("--accent"),
+  valid: token("--mint"),
+  grid: token("--line"),
+  muted: token("--muted"),
+  cursor: token("--muted-2"),
+  fill: token("--chart-fill"),
+  clear: token("--chart-clear"),
+};
 let range = 7;
 let hover = null;
 
@@ -207,7 +217,7 @@ function drawPlot() {
   const x = index => edges.left + index * (edges.right - edges.left) / (frames.length - 1);
   const y = value => edges.bottom - value / 10000 * (edges.bottom - edges.top);
   const date = index => new Date(Date.UTC(2026, 10, 24 - frames.length + index)).toISOString().slice(5, 10);
-  ctx.font = "11px Segoe UI, sans-serif";
+  ctx.font = `11px ${token("--numbers")}`;
   ctx.fillStyle = color.muted;
   ctx.textAlign = "right";
   for (const value of [0, 2500, 5000, 7500, 10000]) {
@@ -223,8 +233,8 @@ function drawPlot() {
   }
   const points = frames.map((value, index) => [x(index), y(value)]);
   const fill = ctx.createLinearGradient(0, edges.top, 0, edges.bottom);
-  fill.addColorStop(0, "#cfff7835");
-  fill.addColorStop(1, "#cfff7800");
+  fill.addColorStop(0, color.fill);
+  fill.addColorStop(1, color.clear);
   ctx.beginPath(); trace(ctx, points); ctx.lineTo(edges.right, edges.bottom); ctx.lineTo(edges.left, edges.bottom); ctx.closePath();
   ctx.fillStyle = fill; ctx.fill();
   ctx.lineWidth = 2;
@@ -235,7 +245,7 @@ function drawPlot() {
 
   if (hover == null) { tooltip.hidden = true; return; }
   const index = Math.max(0, Math.min(frames.length - 1, Math.round((hover - edges.left) / (edges.right - edges.left) * (frames.length - 1))));
-  ctx.strokeStyle = "#8d9fba"; ctx.lineWidth = 1; ctx.setLineDash([4, 4]); ctx.beginPath();
+  ctx.strokeStyle = color.cursor; ctx.lineWidth = 1; ctx.setLineDash([4, 4]); ctx.beginPath();
   ctx.moveTo(x(index), edges.top); ctx.lineTo(x(index), edges.bottom); ctx.stroke(); ctx.setLineDash([]);
   ctx.fillStyle = color.frames; ctx.beginPath(); ctx.arc(x(index), y(frames[index]), 4, 0, Math.PI * 2); ctx.fill();
   tooltip.replaceChildren(element("strong", date(index)), element("div", `采集 ${number.format(frames[index])}`), element("div", `有效 ${number.format(valid[index])}`));
